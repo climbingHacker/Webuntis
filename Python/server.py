@@ -150,7 +150,6 @@ def time_grid_number(self, start, end):
                 raise ValueError("Invalid end time")
         return grid_number_start, grid_number_end
 
-
 def parse_timegrid(tt):
     for i in range(len(tt)):
         entry = tt[i]
@@ -167,6 +166,41 @@ def parse_timegrid(tt):
             tt[i]['end_time'] = end_time_obj.time()
     return tt
 
+# get all entities of a specific type
+@app.route("/classes")
+def classes():
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT id, short_name, long_name FROM classes ORDER BY short_name")
+    classes = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    json_classes = json.dumps(classes, default=str)
+    return flask.Response(json_classes, mimetype="application/json")
+
+@app.route("/teachers")
+def teachers():
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT id, short_name, long_name FROM teachers ORDER BY short_name")
+    teachers = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    json_teachers = json.dumps(teachers, default=str)
+    return flask.Response(json_teachers, mimetype="application/json")
+
+@app.route("/rooms")
+def rooms():
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT id, short_name, long_name FROM rooms ORDER BY short_name")
+    rooms = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    json_rooms = json.dumps(rooms, default=str)
+    return flask.Response(json_rooms, mimetype="application/json")
+
+# Get timetable entries for a specific type
 @app.route("/class/<int:class_id>")
 def class_timetable(class_id):
     conn = get_db()
@@ -202,11 +236,13 @@ def teacher_timetable_by_id(teacher_id):
     entries = parse_timegrid(teacher_timetable(teacher_id=teacher_id))
     json_entries = json.dumps(entries, default=str)
     return flask.Response(json_entries, mimetype="application/json")
+
 @app.route("/teacher/name/<string:short_name>")
 def teacher_timetable_by_name(short_name):
     entries = parse_timegrid(teacher_timetable(short_name=short_name))
     json_entries = json.dumps(entries, default=str)
     return flask.Response(json_entries, mimetype="application/json")
+
 @app.route("/room/<int:room_id>")
 def room_timetable_by_id(room_id):
     entries = parse_timegrid(room_timetable(room_id=room_id))
