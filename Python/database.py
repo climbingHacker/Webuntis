@@ -9,7 +9,6 @@ import mysql.connector
 from webuntis_api import WebUntisClient
 
 
-
 def init_db(corser):
     corser.execute("CREATE DATABASE IF NOT EXISTS webuntis")
     corser.execute("USE webuntis")
@@ -78,6 +77,66 @@ def init_db(corser):
         CREATE INDEX IF NOT EXISTS idx_timetable_fetched
             ON timetable_entries(fetched_at)
     """)
+
+def fetch_and_store_rooms(corser, conn, untis_client):
+    rooms = untis_client.json_get_rooms()
+    for room in rooms.get("result", []):
+        corser.execute(
+            "SELECT id FROM rooms WHERE short_name = %s",
+            (room['name'],)
+        )
+        old_id = corser.fetchone()
+        if old_id:
+            old_id = old_id[0]
+            if old_id != room['id']:
+                corser.execute(
+                    "INSERT INTO rooms (id, short_name, long_name) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE long_name = VALUES(long_name)",
+                    (room['id'], room['name'], room.get('longName'))
+                )
+                corser.execute(
+                    "UPDATE timetable_entries SET room = %s WHERE room = %s",
+                    (room['id'], old_id)
+                )
+                corser.execute(
+                    "DELETE FROM rooms WHERE id = %s",
+                    (old_id,)
+                )
+        else:
+            corser.execute(
+                "INSERT INTO rooms (id, short_name, long_name) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE id = LAST_INSERT_ID(id)",
+                (room['id'], room['name'], room.get('longName'))
+            )
+    conn.commit()
+
+def fetch_and_store_classes(corser, conn, untis_client):
+    classes = untis_client.json_get_classes()
+    for class_info in classes.get("result", []):
+        corser.execute(
+            "SELECT id FROM classes WHERE short_name = %s",
+            (class_info['name'],)
+        )
+        old_id = corser.fetchone()
+        if old_id:
+            old_id = old_id[0]
+            if old_id != class_info['id']:
+                corser.execute(
+                    "INSERT INTO classes (id, short_name, long_name) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE long_name = VALUES(long_name)",
+                    (class_info['id'], class_info['name'], class_info.get('longName'))
+                )
+                corser.execute(
+                    "UPDATE timetable_entries SET class_id = %s WHERE class_id = %s",
+                    (class_info['id'], old_id)
+                )
+                corser.execute(
+                    "DELETE FROM classes WHERE id = %s",
+                    (old_id,)
+                )
+        else:
+            corser.execute(
+                "INSERT INTO classes (id, short_name, long_name) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE id = LAST_INSERT_ID(id)",
+                (class_info['id'], class_info['name'], class_info.get('longName'))
+            )
+    conn.commit()
 
 def store_timetable_entries(corser, conn, class_id, entries):
         for e in entries:
@@ -185,8 +244,9 @@ def fetch_and_store_class_timetable(corser, conn, untis_client, class_id, start_
             })
     
     store_timetable_entries(corser, conn, class_id, flat_entries)
+
 def fetch_and_store_timetable(corser, conn, untis_client, start_date, end_date):
-    classes = untis_client.get_classes()
+    classes = untis_client.json_get_classes()
     for class_info in classes.get("result", []):
         class_id = class_info['id']
         corser.execute(
@@ -197,6 +257,8 @@ def fetch_and_store_timetable(corser, conn, untis_client, start_date, end_date):
 
         fetch_and_store_class_timetable(corser, conn, untis_client, class_id, start_date, end_date)
 
+
+
 async def main():
     conn = mysql.connector.connect(
         host=config.DB_HOST,
@@ -204,12 +266,14 @@ async def main():
         password=config.DB_PASSWORD
     )
     untis_client = WebUntisClient(config.SCHOOL, config.SERVER_URL, config.USERNAME, config.KEY)
-    corser = conn.cursor()
+    corser = conn.cursor(buffered=True)
     today = datetime.date.today()
-    monday = today - datetime.timedelta(days=today.weekday())
-    friday = monday + datetime.timedelta(days=4)
+    monday = today - datetime.timedelta(days=today.weekday()) + datetime.timedelta(days=7)  # Get the Monday of the previous week
+    friday = monday + datetime.timedelta(days=4) + datetime.timedelta(days=7)  # Get the Friday of the previous week
     init_db(corser)
-    fetch_and_store_timetable(corser, conn, untis_client, monday, friday)
+    # fetch_and_store_timetable(corser, conn, untis_client, monday, friday)
+    fetch_and_store_rooms(corser, conn, untis_client)
+    fetch_and_store_classes(corser, conn, untis_client)
     conn.commit()
     return 0
 
