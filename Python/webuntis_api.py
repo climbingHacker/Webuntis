@@ -20,6 +20,8 @@ class WebUntisClient():
         self.server_url = server_url
         self.username = username
         self.key = key
+        self.jsessionid = None
+        self.token = None
 
         totp = pyotp.TOTP(key, interval=30)
         self.login(self.school, self.server_url, totp.now(), self.username, int(datetime.datetime.now().timestamp() * 1000))
@@ -162,32 +164,150 @@ class WebUntisClient():
             timetable[day] = {lesson: {} for lesson in range(1, 12)}
         return timetable
 
-    def get_timetable(self, start_date, end_date, element_type, element_id):
+    def jsonrpc_call(self, method, params=None, id=None):
+        url = f"{self.server_url}/WebUntis/jsonrpc.do"
+        headers = {
+            'Content-Type': 'application/json',
+            'Cookie': f'JSESSIONID={self.jsessionid}'
+        }
+        data = {
+            'id': id or method,
+            'method': method,
+            'params': params or {},
+            'jsonrpc': '2.0'
+        }
+        response = requests.post(url, json=data, headers=headers)
+        return response.json()
+
+    def json_get_teachers(self):
+        """Get list of all teachers using JSON-RPC API 
+
+        :return: return object containing all teachers
+        :rtype: dict
+        """        
+        response = self.jsonrpc_call('getTeachers', id='get_teachers')
+        return response
+
+    def json_get_students(self):
+        """Get list of all students using JSON-RPC API
+
+        :return: return object containing all students
+        :rtype: dict
         """
-        Fetch timetable data using JSON-RPC API.
+        response = self.jsonrpc_call('getStudents', id='get_students')
+        return response
+
+    def json_get_classes(self, year=None):
+        """Get list of all classes using JSON-RPC API
+
+        :return: return object containing all classes
+        :rtype: dict
+        :param year: schoolyear id 
+        :type year: int, optional
+        """
+        params = {}
+        if year is not None:
+            params['year'] = year
+        response = self.jsonrpc_call('getKlassen', params=params, id='get_classes')
+        return response
+
+    def json_get_subjects(self):
+        """Get list of all subjects using JSON-RPC API
+
+        :return: return object containing all subjects
+        :rtype: dict
+        """
+        response = self.jsonrpc_call('getSubjects', id='get_subjects')
+        return response
+
+    def json_get_rooms(self):
+        """Get list of all rooms using JSON-RPC API
+
+        :return: return object containing all rooms
+        :rtype: dict
+        """
+        response = self.jsonrpc_call('getRooms', id='get_rooms')
+        return response
+
+    def json_get_departments(self):
+        """Get list of all departments using JSON-RPC API
+
+        :return: return object containing all departments
+        :rtype: dict
+        """
+        response = self.jsonrpc_call('getDepartments', id='get_departments')
+        return response
+
+    def json_get_holidays(self):
+        """Get list of all holidays using JSON-RPC API
+
+        :return: return object containing all holidays
+        :rtype: dict
+        """
+        response = self.jsonrpc_call('getHolidays', id='get_holidays')
+        return response
+
+    def json_get_timegrid(self):
+        """Get the timegrid using JSON-RPC API
+
+        :return: return object containing the timegrid
+        :rtype: dict
+        """
+        response = self.jsonrpc_call('getTimegrid', id='get_timegrid')
+        return response
+
+    def json_get_status_data(self):
+        """Get status data using JSON-RPC API
+
+        :return: return object containing the status data
+        :rtype: dict
+        """
+        response = self.jsonrpc_call('getStatusData', id='get_statusData')
+        return response
+
+    def json_get_current_schoolyear(self):
+        """Get the current schoolyear using JSON-RPC API
+
+        :return: return object containing the current schoolyear
+        :rtype: dict
+        """
+        response = self.jsonrpc_call('getCurrentSchoolyear', id='get_currentSchoolyear')
+        return response
+
+    def json_get_schoolyears(self):
+        """Get a list of schoolyears using JSON-RPC API
+
+        :return: return object containing the schoolyears
+        :rtype: dict
+        """
+        response = self.jsonrpc_call('getSchoolyears', id='get_schoolyears')
+        return response
+
+    def json_get_timetable(self, start_date, end_date, element_type, element_id):
+        """Fetch timetable data using JSON-RPC API.
         
-        element_type values:
-        - 1 = klasse (class)
+        :param start_date: 
+        :type start_date: datetime.datetime
+        :param end_date: _description_
+        :type end_date: datetime.datetime
+        :param element_type: - 1 = klasse (class)
         - 2 = teacher
         - 3 = subject
         - 4 = room
         - 5 = student
+        
+        :type element_type: int
+        :param element_id: _description_
+        :type element_id: int
+        :return: list of timetable entries for the specified element and date range
+        :rtype: dict
         """
-        url = f"{self.server_url}/WebUntis/jsonrpc.do"
         
         # Convert datetime to WebUntis format (YYYYMMDD)
         start_formatted = start_date.strftime("%Y%m%d")
         end_formatted = end_date.strftime("%Y%m%d")
         
-        headers = {
-            'Content-Type': 'application/json',
-            'Cookie': f'JSESSIONID={self.jsessionid}'
-        }
-        
-        data = {
-            'id': 'get_timetable',
-            'method': 'getTimetable',
-            'params': {
+        params = {
                 'options': {
                     'element': {
                         'id': element_id,
@@ -205,51 +325,42 @@ class WebUntisClient():
                     'subjectFields': ["id", "name", "longname", "externalkey"],
                     'teacherFields': ["id", "name", "longname", "externalkey"]
                 }
-            },
-            'jsonrpc': '2.0'
-        }
+            }
         
-        response = requests.post(url, json=data, headers=headers)
-        return response.json()
+        response = self.jsonrpc_call('getTimetable', params=params, id='get_timetable')
+        return response
 
-    def get_classes(self):
-        """Fetch all classes (Klassen) data."""
-        url = f"{self.server_url}/WebUntis/jsonrpc.do"
-        
-        headers = {
-            'Content-Type': 'application/json',
-            'Cookie': f'JSESSIONID={self.jsessionid}'
-        }
-        
-        data = {
-            'id': 'get_classes',
-            'method': 'getKlassen',
-            'params': {},
-            'jsonrpc': '2.0'
-        }
-        
-        response = requests.post(url, json=data, headers=headers)
-        return response.json()
+    def json_get_last_update(self):
+        """Get the last update timestamp using JSON-RPC API
 
-    def get_holidays(self):
-        """Fetch all holidays data."""
-        url = f"{self.server_url}/WebUntis/jsonrpc.do"
-        
-        headers = {
-            'Content-Type': 'application/json',
-            'Cookie': f'JSESSIONID={self.jsessionid}'
-        }
-        
-        data = {
-            'id': 'get_holidays',
-            'method': 'getHolidays',
-            'params': {},
-            'jsonrpc': '2.0'
-        }
-        
-        response = requests.post(url, json=data, headers=headers)
-        return response.json()
+        :return: return object containing the last update timestamp
+        :rtype: dict
+        """
+        response = self.jsonrpc_call('getLastUpdate', id='get_last_update')
+        return response
 
+    def get_person_id(self, person_type, first_name, last_name):
+        """Get the ID of a person (teacher or student) by their first and last name.
+
+        :param person_type: Type of person (2 for teacher, 5 for student)
+        :type person_type: int
+        :param first_name: First name of the person
+        :type first_name: str
+        :param last_name: Last name of the person
+        :type last_name: str
+        :return: ID of the person if found, otherwise None
+        :rtype: int or None
+        """
+
+        params = {
+            'type': person_type,
+            'fn': first_name,
+            'sn': last_name,
+            'dob': 0
+        }
+        response = self.jsonrpc_call('getPersonId', params=params, id='get_person_id')
+        return response
+    
     def get_raw_timetable_rest_class(self, classID, start_date, end_date):
         url = f"{self.server_url}/WebUntis/api/rest/view/v1/timetable/entries?start={start_date.isoformat()}&end={end_date.isoformat()}&format=1&resourceType=CLASS&resources={str(classID)}&periodTypes=&timetableType=STANDARD"    
         cookies = {
@@ -266,7 +377,7 @@ class WebUntisClient():
 
     def get_timetable_rest_teacher(self, teacherShort, start_date, end_date):
         # Get all classes
-        classes_data = self.get_classes()
+        classes_data = self.json_get_classes()
         timetable = self.create_empty_timetable()
 
         # Iterate through each class and search for lessons with the specified teacher
@@ -316,7 +427,7 @@ class WebUntisClient():
 
     def get_timetable_rest_room(self, roomNumber, start_date, end_date):
         # Get all classes
-        classes_data = self.get_classes()
+        classes_data = self.json_get_classes()
         timetable = self.create_empty_timetable()
         
         # Iterate through each class and search for lessons with the specified teacher
