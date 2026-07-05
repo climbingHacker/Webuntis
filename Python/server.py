@@ -171,7 +171,11 @@ def parse_timegrid(tt):
 def classes():
     conn = get_db()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT id, short_name, long_name FROM classes ORDER BY short_name")
+    cursor.execute("""-- sql
+                    SELECT DISTINCT c.id, c.short_name, c.long_name
+                    FROM classes c
+                    INNER JOIN timetable_entries te ON te.class_id = c.id
+                    ORDER BY c.short_name""")
     classes = cursor.fetchall()
     cursor.close()
     conn.close()
@@ -193,7 +197,11 @@ def teachers():
 def rooms():
     conn = get_db()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT id, short_name, long_name FROM rooms ORDER BY short_name")
+    cursor.execute("""-- sql
+                    SELECT DISTINCT r.id, r.short_name, r.long_name
+                    FROM rooms r
+                    INNER JOIN timetable_entries te ON te.room = r.id
+                    ORDER BY r.id""")
     rooms = cursor.fetchall()
     cursor.close()
     conn.close()
