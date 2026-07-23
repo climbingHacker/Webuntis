@@ -16,6 +16,17 @@
 </head>
 
 <body>
+    <div class="topnav">
+        <select id="type-select" onchange="typeChanged(this)">
+            <option value="0">Class</option>
+            <option value="1">Teacher</option>
+            <option value="2">Room</option>
+        </select>
+        <select id="element-select" onchange="elementChanged(this)">
+        </select>
+        <select id="week-select" onchange="weekChanged(this)">
+        </select>
+    </div>
     <h1>Timetable</h1>
     <div class="vertical-layout">
         <div class="tableless_timetable">
@@ -31,111 +42,111 @@
                 <span class="lesson_num">1</span> <br>
                 <span class="lesson_time">8:50</span>
             </div>
-            <div class="grid-lesson"><button class="lesson-normal monday lesson-1" id="mo-1"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal tuesday lesson-1" id="tu-1"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal wednesday lesson-1" id="we-1"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal thursday lesson-1" id="th-1"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal friday lesson-1" id="fr-1"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal monday lesson-1" id="mo-1" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal tuesday lesson-1" id="tu-1" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal wednesday lesson-1" id="we-1" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal thursday lesson-1" id="th-1" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal friday lesson-1" id="fr-1" onclick="lessonClicked(this)"> -</button></div>
             <div class="grid-lesson-number">
                 <span class="lesson_time">08:55</span> <br>
                 <span class="lesson_num">2</span> <br>
                 <span class="lesson_time">09:45</span>
             </div>
-            <div class="grid-lesson"><button class="lesson-normal monday lesson-2" id="mo-2"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal tuesday lesson-2" id="tu-2"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal wednesday lesson-2" id="we-2"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal thursday lesson-2" id="th-2"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal friday lesson-2" id="fr-2"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal monday lesson-2" id="mo-2" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal tuesday lesson-2" id="tu-2" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal wednesday lesson-2" id="we-2" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal thursday lesson-2" id="th-2" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal friday lesson-2" id="fr-2" onclick="lessonClicked(this)"> -</button></div>
             <div class="grid-lesson-number">
                 <span class="lesson_time">9:50</span> <br>
                 <span class="lesson_num">3</span> <br>
                 <span class="lesson_time">10:40</span>
             </div>
-            <div class="grid-lesson"><button class="lesson-normal monday lesson-3" id="mo-3"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal tuesday lesson-3" id="tu-3"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal wednesday lesson-3" id="we-3"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal thursday lesson-3" id="th-3"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal friday lesson-3" id="fr-3"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal monday lesson-3" id="mo-3" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal tuesday lesson-3" id="tu-3" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal wednesday lesson-3" id="we-3" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal thursday lesson-3" id="th-3" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal friday lesson-3" id="fr-3" onclick="lessonClicked(this)"> -</button></div>
             <div class="grid-lesson-number">
                 <span class="lesson_time">10:55</span> <br>
                 <span class="lesson_num">4</span> <br>
                 <span class="lesson_time">11:45</span>
             </div>
-            <div class="grid-lesson"><button class="lesson-normal monday lesson-4" id="mo-4"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal tuesday lesson-4" id="tu-4"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal wednesday lesson-4" id="we-4"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal thursday lesson-4" id="th-4"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal friday lesson-4" id="fr-4"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal monday lesson-4" id="mo-4" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal tuesday lesson-4" id="tu-4" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal wednesday lesson-4" id="we-4" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal thursday lesson-4" id="th-4" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal friday lesson-4" id="fr-4" onclick="lessonClicked(this)"> -</button></div>
             <div class="grid-lesson-number">
                 <span class="lesson_time">11:50</span> <br>
                 <span class="lesson_num">5</span> <br>
                 <span class="lesson_time">12:40</span>
             </div>
-            <div class="grid-lesson"><button class="lesson-normal monday lesson-5" id="mo-5"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal tuesday lesson-5" id="tu-5"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal wednesday lesson-5" id="we-5"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal thursday lesson-5" id="th-5"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal friday lesson-5" id="fr-5"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal monday lesson-5" id="mo-5" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal tuesday lesson-5" id="tu-5" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal wednesday lesson-5" id="we-5" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal thursday lesson-5" id="th-5" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal friday lesson-5" id="fr-5" onclick="lessonClicked(this)"> -</button></div>
             <div class="grid-lesson-number">
                 <span class="lesson_time">12:45</span> <br>
                 <span class="lesson_num">6</span> <br>
                 <span class="lesson_time">13:35</span>
             </div>
-            <div class="grid-lesson"><button class="lesson-normal monday lesson-6" id="mo-6"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal tuesday lesson-6" id="tu-6"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal wednesday lesson-6" id="we-6"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal thursday lesson-6" id="th-6"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal friday lesson-6" id="fr-6"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal monday lesson-6" id="mo-6" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal tuesday lesson-6" id="tu-6" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal wednesday lesson-6" id="we-6" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal thursday lesson-6" id="th-6" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal friday lesson-6" id="fr-6" onclick="lessonClicked(this)"> -</button></div>
             <div class="grid-lesson-number">
                 <span class="lesson_time">13:40</span> <br>
                 <span class="lesson_num">7</span> <br>
                 <span class="lesson_time">14:30</span>
             </div>
-            <div class="grid-lesson"><button class="lesson-normal monday lesson-7" id="mo-7"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal tuesday lesson-7" id="tu-7"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal wednesday lesson-7" id="we-7"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal thursday lesson-7" id="th-7"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal friday lesson-7" id="fr-7"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal monday lesson-7" id="mo-7" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal tuesday lesson-7" id="tu-7" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal wednesday lesson-7" id="we-7" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal thursday lesson-7" id="th-7" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal friday lesson-7" id="fr-7" onclick="lessonClicked(this)"> -</button></div>
             <div class="grid-lesson-number">
                 <span class="lesson_time">14:30</span> <br>
                 <span class="lesson_num">8</span> <br>
                 <span class="lesson_time">15:20</span>
             </div>
-            <div class="grid-lesson"><button class="lesson-normal monday lesson-8" id="mo-8"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal tuesday lesson-8" id="tu-8"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal wednesday lesson-8" id="we-8"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal thursday lesson-8" id="th-8"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal friday lesson-8" id="fr-8"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal monday lesson-8" id="mo-8" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal tuesday lesson-8" id="tu-8" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal wednesday lesson-8" id="we-8" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal thursday lesson-8" id="th-8" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal friday lesson-8" id="fr-8" onclick="lessonClicked(this)"> -</button></div>
             <div class="grid-lesson-number">
                 <span class="lesson_time">15:20</span> <br>
                 <span class="lesson_num">9</span> <br>
                 <span class="lesson_time">16:10</span>
             </div>
-            <div class="grid-lesson"><button class="lesson-normal monday lesson-9" id="mo-9"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal tuesday lesson-9" id="tu-9"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal wednesday lesson-9" id="we-9"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal thursday lesson-9" id="th-9"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal friday lesson-9" id="fr-9"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal monday lesson-9" id="mo-9" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal tuesday lesson-9" id="tu-9" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal wednesday lesson-9" id="we-9" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal thursday lesson-9" id="th-9" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal friday lesson-9" id="fr-9" onclick="lessonClicked(this)"> -</button></div>
             <div class="grid-lesson-number">
                 <span class="lesson_time">16:15</span> <br>
                 <span class="lesson_num">10</span> <br>
                 <span class="lesson_time">17:05</span>
             </div>
-            <div class="grid-lesson"><button class="lesson-normal monday lesson-10" id="mo-10"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal tuesday lesson-10" id="tu-10"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal wednesday lesson-10" id="we-10"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal thursday lesson-10" id="th-10"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal friday lesson-10" id="fr-10"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal monday lesson-10" id="mo-10" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal tuesday lesson-10" id="tu-10" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal wednesday lesson-10" id="we-10" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal thursday lesson-10" id="th-10" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal friday lesson-10" id="fr-10" onclick="lessonClicked(this)"> -</button></div>
             <div class="grid-lesson-number">
                 <span class="lesson_time">17:10</span> <br>
                 <span class="lesson_num">11</span> <br>
                 <span class="lesson_time">18:00</span>
             </div>
-            <div class="grid-lesson"><button class="lesson-normal monday lesson-11" id="mo-11"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal tuesday lesson-11" id="tu-11"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal wednesday lesson-11" id="we-11"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal thursday lesson-11" id="th-11"> -</button></div>
-            <div class="grid-lesson"><button class="lesson-normal friday lesson-11" id="fr-11"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal monday lesson-11" id="mo-11" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal tuesday lesson-11" id="tu-11" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal wednesday lesson-11" id="we-11" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal thursday lesson-11" id="th-11" onclick="lessonClicked(this)"> -</button></div>
+            <div class="grid-lesson"><button class="lesson-normal friday lesson-11" id="fr-11" onclick="lessonClicked(this)"> -</button></div>
         </div>
         <div id="info">
             <h2>Information</h2>
