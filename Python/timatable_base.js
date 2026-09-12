@@ -3,6 +3,25 @@ function getInfo(element) {
 }
 async function init() {
     let weekSelect = document.getElementById('week-select');
+    startEnd = await fetch('first_last_entry');
+    startEnd = await startEnd.text();
+    startEnd = JSON.parse(startEnd);
+    let startDate = Temporal.PlainDate.from(startEnd.first_entry);
+    let endDate = Temporal.PlainDate.from(startEnd.last_entry);
+    if (startDate.dayOfWeek !== 1) {
+        startDate = startDate.subtract({days:startDate.dayOfWeek});
+    }
+    if (endDate.dayOfWeek !== 1) {
+        endDate = endDate.subtract({days:endDate.dayOfWeek});
+    }
+    for (let weekNumber = startDate.weekOfYear; weekNumber <= endDate.weekOfYear; weekNumber++) {
+        let option = document.createElement('option');
+        option.value = weekNumber
+        option.text = 'Week ' + weekNumber;
+        weekSelect.appendChild(option);
+    }
+    await typeChanged(document.getElementById('type-select'));
+    await updateTimetable();
 }
 
 async function typeChanged(selectElement) {

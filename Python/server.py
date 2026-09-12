@@ -263,5 +263,19 @@ def room_timetable_by_name(short_name):
     json_entries = json.dumps(entries, default=str)
     return flask.Response(json_entries, mimetype="application/json")
 
+@app.route("/first_last_entry")
+def first_last_entry():
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("""-- sql
+        SELECT MIN(date) AS first_entry, MAX(date) AS last_entry
+        FROM timetable_entries
+    """)
+    result = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    json_result = json.dumps(result, default=str)
+    return flask.Response(json_result, mimetype="application/json")
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
