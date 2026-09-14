@@ -77,6 +77,8 @@ async function updateTimetable() {
     let typeSelect = document.getElementById('type-select');
     let elementSelect = document.getElementById('element-select');
     let weekSelect = document.getElementById('week-select');
+    let timetablediv = document.getElementById('timetable-entrys');
+    timetablediv.innerHTML = '';
     let selectedType = typeSelect.value;
     let selectedElement = elementSelect.value;
     let selectedWeek = weekSelect.value;
@@ -89,34 +91,36 @@ async function updateTimetable() {
     data = await data.json();
     for (let entry of data) {
         let day = Temporal.PlainDate.from(entry.date).dayOfWeek;
-        let lessonNumber = entry.lesson_number;
-        let buttonId = '';
+        let period_start = entry.period_start.split(':');
+        let period_end = entry.period_end.split(':');
+        let begin = (parseInt(period_start[0]) - 8)*60 + parseInt(period_start[1]);
+        let end = (parseInt(period_end[0]) - 8)*60 + parseInt(period_end[1]);
+        let duration = end - begin;
+        let entryDiv = document.createElement('div');
+        let firstline = '';
+        let lastline = '';
+        if (selectedType === 'class') {
+            firstline = entry.teacher;
+            lastline = entry.room;
+        } else if (selectedType === 'teacher') {
+            firstline = entry.class;
+            lastline = entry.room;
+        } else if (selectedType === 'room') {
+            firstline = entry.class;
+            lastline = entry.teacher;
+        }
+        entryDiv.href = "#";
+        entryDiv.className = "lesson-normal";
+        entryDiv.setAttribute("onclick", "switchLayout()");
+        entryDiv.style.position = "absolute";
+        entryDiv.style.bottom = (590 - end)*1.8 + "px";
+        entryDiv.style.left = (day)*120 + "px";
+        entryDiv.style.height = duration*1.8 + "px";
+        entryDiv.innerHTML = `
+                <span class="teacher-name">${firstline}</span><br>
+                <span class="subject">${entry.subject}</span><br>
+                <span class="room">${lastline}</span>`;
+        timetablediv.appendChild(entryDiv);
     }
 
-}
-async function parseTimeTable() {
-    let weekdays = ['mo', 'tu', 'we', 'th', 'fr'];
-    let data = await fetch('timetable2.json')
-    data = await data.text();
-    let json = JSON.parse(data);
-    document.getElementById('info').innerText = json["tu"][4]["room"];
-    for (let day of weekdays) {
-        for (let lessonNumber = 1; lessonNumber <= 11; lessonNumber++) {
-            let lessonKey = json[day][lessonNumber];
-            let buttonId = day + '-' + lessonNumber;
-            let buttonElement = document.getElementById(buttonId);
-            if ((lessonKey["teacherShort"] !== undefined) || (lessonKey["class"] !== undefined) || (lessonKey["subject"] !== undefined) || (lessonKey["room"] !== undefined)) {
-                buttonElement.innerHTML = `
-                <div>
-                    <span class="teacher-name">${lessonKey["class"]}</span><br>
-                    <span class="subject">${lessonKey["subject"]}</span><br>
-                    <span class="room">${lessonKey["room"]}</span>
-                </div>`;
-            } else {
-                buttonElement.innerHTML = '';
-                buttonElement.disabled = true;
-                buttonElement.style.visibility = 'hidden';
-            }
-        }
-    }
 }
