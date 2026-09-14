@@ -3,7 +3,6 @@ composer.phar
 __pycache__
 login_response.json
 test.json
-index.html
 webuntis-api-docs.md
 2018-09-20-WebUntis_JSON_RPC_API.pdf
 timetable.json

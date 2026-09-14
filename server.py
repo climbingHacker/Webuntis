@@ -142,6 +142,9 @@ def teacher_timetable(teacher_id=None, short_name=None, start_date=None, end_dat
     conn.close()
     return entries
 
+@app.route("/")
+def index():
+    return flask.render_template("index.html")
 # get all entities of a specific type
 @app.route("/classes")
 def classes():
