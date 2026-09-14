@@ -8,8 +8,8 @@ import datetime
 
 app = flask.Flask(__name__,
     static_url_path='',
-    static_folder='.',
-    template_folder='.')
+    static_folder='./static',
+    template_folder='./static')
 
 def get_db():
     conn = mysql.connector.connect(
