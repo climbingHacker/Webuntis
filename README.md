@@ -30,3 +30,5 @@ Start the flask server.
 ├── timetable_base.css       # Frontend css
 └── timetable_base.js        # Frontend js
 ```
+## AI Declaration
+AI inline suggestions were used in this Project, also AI was used for researching and understanding concepts.
