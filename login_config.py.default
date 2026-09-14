@@ -1,4 +1,10 @@
-KEY = ""  # Key used to generate the OTP
-SCHOOL = "school-abbr"        # WebUntis school name
-USERNAME = "example(@school.tld)" # WebUntis username
-SERVER_URL = "https://school-abbr.webuntis.com"  # WebUntis server URL
+KEY = ""                                        # Key used to generate the OTP
+SCHOOL = "school"                          # WebUntis school name
+USERNAME = "user(@school.tld)"               # WebUntis username
+SERVER_URL = "https://school.webuntis.com" # WebUntis server URL
+
+#MySQL database configuration
+DB_HOST = "localhost"
+DB_USER = "root"
+DB_PASSWORD = ""
+DB_NAME = "webuntis"
