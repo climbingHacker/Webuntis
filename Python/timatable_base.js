@@ -16,7 +16,7 @@ async function init() {
     }
     for (let weekNumber = startDate.weekOfYear; weekNumber <= endDate.weekOfYear; weekNumber++) {
         let option = document.createElement('option');
-        option.value = weekNumber
+        option.value = startDate.add({days: (startDate.weekOfYear-weekNumber) * 7}).toString();
         option.text = 'Week ' + weekNumber;
         weekSelect.appendChild(option);
     }
@@ -28,7 +28,7 @@ async function typeChanged(selectElement) {
     let selectedType = selectElement.value;
     let elementSelect = document.getElementById('element-select');
     elementSelect.innerHTML = '';
-    if (selectedType === '0') {
+    if (selectedType === 'class') {
         // Class
         let classes = await fetch('classes');
         classes = await classes.text();
@@ -39,7 +39,7 @@ async function typeChanged(selectElement) {
             option.text = cls.short_name + ' (' + cls.long_name + ')';
             elementSelect.appendChild(option);
         }
-    } else if (selectedType === '1') {
+    } else if (selectedType === 'teacher') {
         // Teacher
         let teachers = await fetch('teachers');
         teachers = await teachers.text();
@@ -50,7 +50,7 @@ async function typeChanged(selectElement) {
             option.text = '(' + teacher.short_name + ') ' + teacher.long_name;
             elementSelect.appendChild(option);
         }
-    } else if (selectedType === '2') {
+    } else if (selectedType === 'room') {
         // Room
         let rooms = await fetch('rooms');
         rooms = await rooms.text();
@@ -76,10 +76,23 @@ async function weekChanged(selectElement) {
 async function updateTimetable() {
     let typeSelect = document.getElementById('type-select');
     let elementSelect = document.getElementById('element-select');
+    let weekSelect = document.getElementById('week-select');
     let selectedType = typeSelect.value;
     let selectedElement = elementSelect.value;
+    let selectedWeek = weekSelect.value;
     console.log("Selected Type: " + selectedType);
     console.log("Selected Element: " + selectedElement);
+    console.log("Selected Week: " + selectedWeek);
+    startdate = Temporal.PlainDate.from(selectedWeek);
+    enddate = startdate.add({days: 6});
+    data = await fetch('/' + selectedType + '/' + selectedElement + '?start_date=' + startdate.toString() + '&end_date=' + enddate.toString());
+    data = await data.json();
+    for (let entry of data) {
+        let day = Temporal.PlainDate.from(entry.date).dayOfWeek;
+        let lessonNumber = entry.lesson_number;
+        let buttonId = '';
+    }
+
 }
 async function parseTimeTable() {
     let weekdays = ['mo', 'tu', 'we', 'th', 'fr'];
