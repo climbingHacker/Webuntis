@@ -16,7 +16,7 @@ async function init() {
     }
     for (let weekNumber = startDate.weekOfYear; weekNumber <= endDate.weekOfYear; weekNumber++) {
         let option = document.createElement('option');
-        option.value = startDate.add({days: (startDate.weekOfYear-weekNumber) * 7}).toString();
+        option.value = startDate.add({days: (weekNumber - startDate.weekOfYear) * 7}).toString();
         option.text = 'Week ' + weekNumber;
         weekSelect.appendChild(option);
     }

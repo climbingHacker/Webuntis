@@ -2,7 +2,6 @@
 
 import login_config as config
 
-import asyncio
 import datetime
 import sys
 import mysql.connector 
@@ -93,14 +92,6 @@ def fetch_and_store_rooms(corser, conn, untis_client):
                     "INSERT INTO rooms (id, short_name, long_name) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE long_name = VALUES(long_name)",
                     (room['id'], room['name'], room.get('longName'))
                 )
-                corser.execute(
-                    "UPDATE timetable_entries SET room = %s WHERE room = %s",
-                    (room['id'], old_id)
-                )
-                corser.execute(
-                    "DELETE FROM rooms WHERE id = %s",
-                    (old_id,)
-                )
         else:
             corser.execute(
                 "INSERT INTO rooms (id, short_name, long_name) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE id = LAST_INSERT_ID(id)",
@@ -122,14 +113,6 @@ def fetch_and_store_classes(corser, conn, untis_client):
                 corser.execute(
                     "INSERT INTO classes (id, short_name, long_name) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE long_name = VALUES(long_name)",
                     (class_info['id'], class_info['name'], class_info.get('longName'))
-                )
-                corser.execute(
-                    "UPDATE timetable_entries SET class_id = %s WHERE class_id = %s",
-                    (class_info['id'], old_id)
-                )
-                corser.execute(
-                    "DELETE FROM classes WHERE id = %s",
-                    (old_id,)
                 )
         else:
             corser.execute(
@@ -259,7 +242,7 @@ def fetch_and_store_timetable(corser, conn, untis_client, start_date, end_date):
 
 
 
-async def main():
+def main():
     conn = mysql.connector.connect(
         host=config.DB_HOST,
         user=config.DB_USER,
@@ -268,10 +251,10 @@ async def main():
     untis_client = WebUntisClient(config.SCHOOL, config.SERVER_URL, config.USERNAME, config.KEY)
     corser = conn.cursor(buffered=True)
     today = datetime.date.today()
-    monday = today - datetime.timedelta(days=today.weekday()) + datetime.timedelta(days=7)  # Get the Monday of the previous week
-    friday = monday + datetime.timedelta(days=4) + datetime.timedelta(days=7)  # Get the Friday of the previous week
+    monday = today - datetime.timedelta(days=today.weekday())
+    friday = monday + datetime.timedelta(days=4)
     init_db(corser)
-    # fetch_and_store_timetable(corser, conn, untis_client, monday, friday)
+    fetch_and_store_timetable(corser, conn, untis_client, monday, friday)
     fetch_and_store_rooms(corser, conn, untis_client)
     fetch_and_store_classes(corser, conn, untis_client)
     conn.commit()
@@ -279,4 +262,4 @@ async def main():
 
 
 if __name__ == "__main__":
-    sys.exit(asyncio.run(main()))
+    sys.exit(main())

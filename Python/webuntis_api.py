@@ -602,6 +602,18 @@ def main():
         print(f"Fetching timetable from {monday} to {friday}...")
         #timetable_data = WebUntis.get_timetable_rest_room(credentinals, 'A313', monday, friday)
         timetable_data = WebUntis.get_timetable_rest_teacher('STEL', monday, friday)
+        teachers = WebUntis.json_get_teachers()
+        rooms = WebUntis.json_get_rooms()
+        classes = WebUntis.json_get_classes()
+        timegrid = WebUntis.json_get_timegrid()
+        with open('teachers.json', 'w', encoding='utf-8') as f:
+            json.dump(teachers, f, ensure_ascii=False, indent=4)
+        with open('rooms.json', 'w', encoding='utf-8') as f:
+            json.dump(rooms, f, ensure_ascii=False, indent=4)
+        with open('classes.json', 'w', encoding='utf-8') as f:
+            json.dump(classes, f, ensure_ascii=False, indent=4)
+        with open('timegrid.json', 'w', encoding='utf-8') as f:
+            json.dump(timegrid, f, ensure_ascii=False, indent=4)
         with open('timetable2.json', 'w', encoding='utf-8') as f:
             json.dump(timetable_data, f, ensure_ascii=False, indent=4)
         print("Timetable saved to timetable2.json")
@@ -611,6 +623,5 @@ def main():
         print("Timetable saved to timetable.json")
     except Exception as e:
         print(f"Error: {e}")
-
 if __name__ == "__main__":
     main()
